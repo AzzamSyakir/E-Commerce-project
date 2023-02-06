@@ -35,37 +35,48 @@ class userController extends Controller
         return response()->json(['message' => 'user registered']);
 }
 
-public function login(Request $request)
-{
-$request->validate([
-'email' => 'required|string|',
-'password' => 'required|string'
-]);    
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|',
+            'password' => 'required|string'
+        ]);
 
+        $credentials = request(['email', 'password']);
 
-$credentials = request(['email', 'password']);
+        $email = $credentials['email'];
+        $password = $credentials['password'];
 
-if (!Auth::attempt($credentials))
-    return response()->json([
-        'message' => 'Unauthorized'
-    ], 401);
+        $user = User::where('email', $email)->first();
 
-$user = $request->user();
-$tokenResult = $user->createToken('Personal Access Token');
-$token = $tokenResult->token;
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak terdaftar'
+            ], 401);
+        }
 
-if ($request->remember_me)
-    $token->expires_at = Carbon::now()->addWeeks(1);
+        if (!Hash::check($password, $user->password)) {
+            return response()->json([
+                'message' => 'Password salah'
+            ], 401);
+        }
 
-$token->save();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->token;
 
-return response()->json([
-    'access_token' => $tokenResult->accessToken,
-    'token_type' => 'Bearer',
-    'expires_at' => Carbon::parse(
-        $tokenResult->token->expires_at
-    )->toDateTimeString()
-]);
-}
+        if (!$tokenResult) {
+            return response()->json([
+                'message' => 'Gagal membuat token'
+            ], 500);
+        }
+
+        return response()->json([
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+            )->toDateTimeString()
+        ]);
+    }
 }
 
