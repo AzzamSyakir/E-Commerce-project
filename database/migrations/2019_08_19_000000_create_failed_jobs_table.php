@@ -21,6 +21,11 @@ class CreateFailedJobsTable extends Migration
             $table->longText('payload');
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('gender');
+            $table->bigInteger('no telp');
         });
     }
 
