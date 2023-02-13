@@ -3,84 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\admin;
-use App\Http\Requests\StoreadminRequest;
-use App\Http\Requests\UpdateadminRequest;
+use App\Models\product;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
-class AdminController extends Controller
+class adminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function AdminRegister(Request $request)
     {
-        //
+        //register user
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'password' => 'required|string',
+            'telpon' => 'required|numeric|'
+        ]);
+        $user = new User([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+            'email' => $request->email,
+            'gender' => $request->gender,
+            'telpon' => $request->telpon
+        ]);
+
+        $role = Role::firstOrCreate(['name' => 'penjual', 'guard_name' => 'web']);
+        $user->assignRole($role);
+        $user->save();
+        return response()->json(['message' => 'penjual registered']);
+    }
+    public function Adminlogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|',
+            'password' => 'required|string'
+        ]);
+
+        $credentials = request(['email', 'password']);
+
+        $email = $credentials['email'];
+        $password = $credentials['password'];
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak terdaftar'
+            ], 401);
+        }
+
+        if (!Hash::check($password, $user->password)) {
+            return response()->json([
+                'message' => 'Password salah'
+            ], 401);
+        }
+
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->token;
+
+        if (!$tokenResult) {
+            return response()->json([
+                'message' => 'Gagal membuat token'
+            ], 500);
+        }
+
+        return response()->json([
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+            )->toDateTimeString()
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreadminRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreadminRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function show(admin $admin)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(admin $admin)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateadminRequest  $request
-     * @param  \App\Models\admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateadminRequest $request, admin $admin)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\admin  $admin
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(admin $admin)
-    {
-        //
-    }
 }

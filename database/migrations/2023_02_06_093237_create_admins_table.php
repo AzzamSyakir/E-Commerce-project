@@ -22,6 +22,7 @@ class CreateAdminsTable extends Migration
             $table->string('gender');
             $table->bigInteger('telpon');
             $table->rememberToken();
+            $table->timestamps();
         });
     }
 

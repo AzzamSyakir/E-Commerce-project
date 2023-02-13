@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\adminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,9 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::controller(userController::class)->group(function () {
     Route::post('/register', 'register');
-    Route::post('/registerAdmin', 'Adminregister');
     Route::post('/login', 'login');
-    Route::post('/loginAdmin', 'Adminlogin');
     Route::get('/listProduct', 'listProduct');
     Route::post('/addProduct', 'addProduct')->middleware(['auth:api']);
+
+});
+
+Route::controller(adminController::class)->group(function () {
+    Route::post('/registerAdmin', 'Adminregister');
+    Route::post('/loginAdmin', 'Adminlogin');
 });
