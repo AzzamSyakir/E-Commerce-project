@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\adminController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,4 +23,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(userController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
+    Route::get('/listProduct', 'listProduct');
+    Route::post('/addProduct', 'addProduct')->middleware(['auth:api']);
+
+});
+
+Route::controller(adminController::class)->group(function () {
+    Route::post('/registerAdmin', 'Adminregister');
+    Route::post('/loginAdmin', 'Adminlogin');
+});
+
+Route::controller(PaymentController::class)->group(function () {
+    Route::post('/pay', 'createPayment');
+    Route::post('/afterpayment', 'AfterPayment');
 });
