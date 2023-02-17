@@ -24,7 +24,7 @@ class adminController extends Controller
             'password' => 'required|string',
             'telpon' => 'required|numeric|'
         ]);
-        $user = new User([
+        $user = new admin([
             'name' => $request->name,
             'password' => Hash::make($request->password),
             'email' => $request->email,
