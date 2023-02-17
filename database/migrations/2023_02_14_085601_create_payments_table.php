@@ -16,12 +16,12 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id');
             $table->string('name');
-            $table->string('amount');
-            $table->string('status');
+            $table->bigInteger('total_price');
             $table->string('email');
             $table->string('phone');
+            $table->integer('qty');
+            $table->enum('status', ['unpaid', 'paid']);
             $table->timestamps();
         });
     }

@@ -14,8 +14,7 @@ use App\Http\Controllers\PaymentController;
 |
 */
 
-Route::get('/', [PaymentController::class, 'processPayment'])->name('isinya apa');
+Route::get('/', [PaymentController::class, 'index']);
 
-Route::get('/payment', function () {
-    return view('payment');
-});
+Route::post('/checkout', [PaymentController::class, 'checkout']);
+Route::get('/invoice/{id}', [PaymentController::class, 'invoice']);

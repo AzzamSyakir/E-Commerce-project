@@ -15,55 +15,53 @@ use Midtrans\Transaction;
 class PaymentController extends Controller
 {
 
-    public function processPayment(Request $request)
+    public function index()
     {
+        return view('home');
+    }
+    public function checkout(Request $request)
+    {
+        $request->request->add(['total_price' => $request->qty * 1000]);
+        $payment = Payment::create($request->all());
         // Set your Merchant Server Key
-        Config::$serverKey = config('app.midtrans_server_key');
+        Config::$serverKey = config('midtrans.server_key');
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
         Config::$isProduction = false;
         // Set sanitization on (default)
         Config::$isSanitized = true;
         // Set 3DS transaction for credit card to true
         Config::$is3ds = true;
-        $transaction_details = array(
-            'order_id' => rand(),
-            'gross_amount' => 10000,
-        );
-        $customer_details = array(
-            'name' => 'Asa',
-            'email' => 'budi.pra@example.com',
-            'phone' => '08111222333',
-        );
+
         $params = array(
-            'transaction_details' => $transaction_details,
-            'customer_details' => $customer_details
+            'transaction_details' => array(
+                'order_id' => $payment->id,
+                'gross_amount' => $payment->total_price,
+            ),
+            'customer_details' => array(
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ),
         );
-
-
-        $payment = new Payment;
-        $payment->order_id = $transaction_details['order_id'];
-        $payment->name = $customer_details['name'];
-        $payment->amount = $transaction_details['gross_amount'];
-        $payment->status = 'pending';
-        $payment->save();
 
         $snapToken = Snap::getSnapToken($params);
-
-        return view('payment', ['snapToken' => $snapToken]);
+        return view('checkout', compact('snapToken', 'payment'));
     }
-    public function AfterPayment(Request $request)
+    public function CallBack(Request $request)
     {
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$clientKey = env('MIDTRANS_CLIENT_KEY');
-        Config::$isProduction = false;
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
-        $transaction = Transaction::status($request->transaction_id);
-        if ($transaction->transaction_status == 'capture') {
-            $payment = Payment::find($request->order_id);
-            $payment->update(['status' => 'paid']);
+        $serverKey = config('midtrans.server_key');
+        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        if ($hashed == $request->signature_key) {
+            if ($request->transaction_status == 'capture') {
+                $payment = Payment::find($request->order_id);
+                $payment->update(['status' => 'paid']);
+            }
         }
-        ;
-        return response()->json('lunas, udah bayar');
     }
+    public function invoice($id)
+    {
+        $paymment = Payment::find($id);
+        return view('invoice', compact('payment'));
+    }
+
 }

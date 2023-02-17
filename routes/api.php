@@ -37,3 +37,5 @@ Route::controller(PaymentController::class)->group(function () {
     Route::post('/pay', 'createPayment');
     Route::post('/afterpayment', 'AfterPayment');
 });
+
+Route::post('/callback', [PaymentController::class, 'CallBack']);
