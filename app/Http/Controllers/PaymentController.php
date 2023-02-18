@@ -60,7 +60,7 @@ class PaymentController extends Controller
     }
     public function invoice($id)
     {
-        $paymment = Payment::find($id);
+        $payment = Payment::find($id);
         return view('invoice', compact('payment'));
     }
 
