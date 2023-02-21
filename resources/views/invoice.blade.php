@@ -36,11 +36,7 @@
                 </tr>
                 <td>total harga</td>
                 <td> : {{$payment->total_price}}</td>
-                <tr> </tr>
-                <td>Status pesananan</td>
-                <td> : {{$payment->status}}</td>
                 <tr>
-
 
             </table>
             </form>
