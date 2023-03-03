@@ -26,7 +26,3 @@ Route::controller(userController::class)->group(function () {
     Route::post('/addProduct', 'addProduct')->middleware(['auth:api']);
 
 });
-
-Route::controller(adminController::class)->group(function () {
-    Route::post('/registerAdmin', 'Adminregister');
-    Route::post('/loginAdmin', 'Adminlogin');
