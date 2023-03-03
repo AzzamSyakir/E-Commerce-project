@@ -29,5 +29,4 @@ Route::controller(userController::class)->group(function () {
 
 Route::controller(adminController::class)->group(function () {
     Route::post('/registerAdmin', 'Adminregister');
-    Route::post('/loginAdmin', 'Adminlogin');
-
+});
