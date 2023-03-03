@@ -24,5 +24,4 @@ Route::controller(userController::class)->group(function () {
     Route::post('/login', 'login');
     Route::get('/listProduct', 'listProduct');
     Route::post('/addProduct', 'addProduct')->middleware(['auth:api']);
-
 });
