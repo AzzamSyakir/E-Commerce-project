@@ -32,9 +32,3 @@ Route::controller(adminController::class)->group(function () {
     Route::post('/loginAdmin', 'Adminlogin');
 });
 
-Route::controller(PaymentController::class)->group(function () {
-    Route::post('/pay', 'createPayment');
-    Route::post('/afterpayment', 'AfterPayment');
-});
-
-Route::post('/callback', [PaymentController::class, 'CallBack']);
