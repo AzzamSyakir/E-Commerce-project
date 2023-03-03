@@ -33,7 +33,7 @@ class adminController extends Controller
         ]);
 
         $role = Role::firstOrCreate(['name' => 'penjual', 'guard_name' => 'web']);
-        $user->assignRole('penjual');
+        $user->assignRole($role);
         $user->save();
         return response()->json(['message' => 'penjual registered']);
     }
