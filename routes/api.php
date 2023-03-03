@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\adminController;
-use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userController;
