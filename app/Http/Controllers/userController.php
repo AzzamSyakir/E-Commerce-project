@@ -38,12 +38,12 @@ class userController extends Controller
 public function login(Request $request)
 {
 $request->validate([
-'email' => 'required|string|',
+'username' => 'required|string|',
 'password' => 'required|string'
 ]);    
 
-
-$credentials = request(['email', 'password']);
+$credentials = request(['username', 'password']);
+dd('berhasil');
 
 if (!Auth::attempt($credentials))
     return response()->json([
@@ -67,5 +67,7 @@ return response()->json([
     )->toDateTimeString()
 ]);
 }
+
+
 }
 

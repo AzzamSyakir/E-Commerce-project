@@ -5,6 +5,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userController;
+use App\Http\Controllers\SessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,5 @@ Route::controller(PaymentController::class)->group(function () {
 });
 
 Route::post('/callback', [PaymentController::class, 'CallBack']);
+
+Route::post('/loginsession', [SessionController::class, 'LoginSession']);

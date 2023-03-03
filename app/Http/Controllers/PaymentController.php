@@ -15,10 +15,11 @@ use Midtrans\Transaction;
 class PaymentController extends Controller
 {
 
-    public function index()
+    public function home()
     {
         return view('home');
     }
+    
     public function checkout(Request $request)
     {
         $request->request->add(['total_price' => $request->qty * 1000]);
